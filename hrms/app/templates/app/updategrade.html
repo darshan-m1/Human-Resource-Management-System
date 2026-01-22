@@ -1,0 +1,291 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Update Performance Grades</h1>
+        <p class="text-muted mb-0">Modify existing performance ratings and feedback</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Employee Information -->
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-person-badge text-primary fs-2"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ object.employee.user.get_full_name }}</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-briefcase me-1"></i>{{ object.employee.get_role_display }}
+                        </span>
+                        <span class="badge bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-building me-1"></i>{{ object.employee.department.name }}
+                        </span>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="badge bg-success bg-opacity-10 text-success p-2 rounded-pill">
+                        <i class="bi bi-check-circle me-1"></i>Already Graded
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Alert -->
+        <div class="glass-card p-4 mb-4 bg-warning bg-opacity-10 border-warning">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-warning bg-opacity-20 p-2 me-3">
+                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1 text-warning">Important Notice</h5>
+                    <p class="text-muted mb-0">You are updating existing grades. Previous ratings will be replaced.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Current Ratings Display -->
+        <div class="glass-card p-4 mb-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-graph-up text-info"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Current Performance Ratings</h4>
+                    <p class="text-muted mb-0">Existing grades that will be updated</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-{% if object.responsibility_rating >= 4 %}excellent{% elif object.responsibility_rating >= 2.5 %}average{% else %}poor{% endif %} mb-2 mx-auto">
+                            {{ object.responsibility_rating }}
+                        </div>
+                        <h6 class="mb-1">Responsibilities</h6>
+                        <p class="text-muted small mb-0">Current rating</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-{% if object.communication_rating >= 4 %}excellent{% elif object.communication_rating >= 2.5 %}average{% else %}poor{% endif %} mb-2 mx-auto">
+                            {{ object.communication_rating }}
+                        </div>
+                        <h6 class="mb-1">Communication</h6>
+                        <p class="text-muted small mb-0">Current rating</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-{% if object.quality_rating >= 4 %}excellent{% elif object.quality_rating >= 2.5 %}average{% else %}poor{% endif %} mb-2 mx-auto">
+                            {{ object.quality_rating }}
+                        </div>
+                        <h6 class="mb-1">Quality</h6>
+                        <p class="text-muted small mb-0">Current rating</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-{% if object.accountability_rating >= 4 %}excellent{% elif object.accountability_rating >= 2.5 %}average{% else %}poor{% endif %} mb-2 mx-auto">
+                            {{ object.accountability_rating }}
+                        </div>
+                        <h6 class="mb-1">Accountability</h6>
+                        <p class="text-muted small mb-0">Current rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Form -->
+        <div class="glass-card p-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-pencil-square text-primary"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Update Performance Ratings</h4>
+                    <p class="text-muted mb-0">Enter new ratings (0.0 - 5.0)</p>
+                </div>
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="row g-4">
+                    <!-- Responsibilities -->
+                    <div class="col-md-6">
+                        <div class="glass-card p-4 hover-lift">
+                            <label class="form-label fw-semibold mb-3">
+                                <i class="bi bi-list-task text-primary me-2"></i>
+                                New Responsibilities Rating
+                            </label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-graph-up text-muted"></i>
+                                </span>
+                                {{ form.responsibility_rating }}
+                                <span class="input-group-text">/5.0</span>
+                            </div>
+                            <small class="form-text text-muted d-flex align-items-center">
+                                <i class="bi bi-clock-history text-info me-1"></i>
+                                Previous: {{ object.responsibility_rating }}/5.0
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Communication -->
+                    <div class="col-md-6">
+                        <div class="glass-card p-4 hover-lift">
+                            <label class="form-label fw-semibold mb-3">
+                                <i class="bi bi-chat-text text-success me-2"></i>
+                                New Communication Rating
+                            </label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-chat-left-text text-muted"></i>
+                                </span>
+                                {{ form.communication_rating }}
+                                <span class="input-group-text">/5.0</span>
+                            </div>
+                            <small class="form-text text-muted d-flex align-items-center">
+                                <i class="bi bi-clock-history text-info me-1"></i>
+                                Previous: {{ object.communication_rating }}/5.0
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Quality -->
+                    <div class="col-md-6">
+                        <div class="glass-card p-4 hover-lift">
+                            <label class="form-label fw-semibold mb-3">
+                                <i class="bi bi-award text-info me-2"></i>
+                                New Quality Rating
+                            </label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-check-square text-muted"></i>
+                                </span>
+                                {{ form.quality_rating }}
+                                <span class="input-group-text">/5.0</span>
+                            </div>
+                            <small class="form-text text-muted d-flex align-items-center">
+                                <i class="bi bi-clock-history text-info me-1"></i>
+                                Previous: {{ object.quality_rating }}/5.0
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Accountability -->
+                    <div class="col-md-6">
+                        <div class="glass-card p-4 hover-lift">
+                            <label class="form-label fw-semibold mb-3">
+                                <i class="bi bi-shield-check text-warning me-2"></i>
+                                New Accountability Rating
+                            </label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text bg-light">
+                                    <i class="bi bi-shield-check text-muted"></i>
+                                </span>
+                                {{ form.accountability_rating }}
+                                <span class="input-group-text">/5.0</span>
+                            </div>
+                            <small class="form-text text-muted d-flex align-items-center">
+                                <i class="bi bi-clock-history text-info me-1"></i>
+                                Previous: {{ object.accountability_rating }}/5.0
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comments -->
+                <div class="glass-card p-4 mt-4 hover-lift">
+                    <label class="form-label fw-semibold mb-3">
+                        <i class="bi bi-chat-left-text text-dark me-2"></i>
+                        Updated Comments & Feedback
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light align-items-start">
+                            <i class="bi bi-chat-quote text-muted mt-1"></i>
+                        </span>
+                        {{ form.comments }}
+                    </div>
+                    <small class="form-text text-muted d-flex align-items-center mt-2">
+                        <i class="bi bi-lightbulb text-warning me-1"></i>
+                        Provide updated feedback, highlight strengths, and suggest areas for improvement
+                    </small>
+                </div>
+                
+                <!-- Original Reviewer -->
+                {% if object.commented_by %}
+                <div class="glass-card p-4 mt-4 bg-light">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-secondary bg-opacity-10 p-2 me-3">
+                            <i class="bi bi-person-check text-secondary"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1">Originally Reviewed By</h6>
+                            <p class="mb-0">{{ object.commented_by.user.get_full_name }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <div class="border-top pt-4 mt-4">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'app:perflist' %}" class="btn btn-outline-danger px-4 hover-lift">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <div class="d-flex gap-2">
+                            
+                            <button type="submit" class="btn gradient-btn px-4 hover-lift">
+                                <i class="bi bi-save me-2"></i>Update Grades
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Rating Guide -->
+        <div class="glass-card p-4 mt-4">
+            <h5 class="mb-3 d-flex align-items-center">
+                <i class="bi bi-speedometer2 text-primary me-2"></i>Rating Guidelines
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-excellent mb-2 mx-auto">5</div>
+                        <h6 class="mb-1">Excellent (4.0-5.0)</h6>
+                        <p class="text-muted small mb-0">Consistently exceeds expectations</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-good mb-2 mx-auto">4</div>
+                        <h6 class="mb-1">Good (3.0-3.9)</h6>
+                        <p class="text-muted small mb-0">Frequently exceeds expectations</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-average mb-2 mx-auto">2.5</div>
+                        <h6 class="mb-1">Average (2.0-2.9)</h6>
+                        <p class="text-muted small mb-0">Meets all expectations</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="rating-circle rating-poor mb-2 mx-auto">1</div>
+                        <h6 class="mb-1">Needs Work (0-1.9)</h6>
+                        <p class="text-muted small mb-0">Below expectations</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

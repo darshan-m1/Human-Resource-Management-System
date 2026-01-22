@@ -1,0 +1,111 @@
+{% if request.user.is_authenticated %}
+<nav class="navbar navbar-expand-lg navbar-dark glass-navbar">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'app:dashboard' %}">
+            <div class="rounded-circle bg-primary bg-opacity-20 p-2 me-2">
+                <i class="bi bi-briefcase text-light"></i>
+            </div>
+            <span class="gradient-text fw-bold">HRMS</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="{% url 'app:dashboard' %}">
+                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                    </a>
+                </li>
+                
+                <!-- Learning Plans -->
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="{% url 'app:learnplan' %}">
+                        <i class="bi bi-journal-text me-1"></i>Learning Plans
+                    </a>
+                </li>
+                
+                <!-- Subordinates -->
+                {% if request.user.employee.employee_set.exists %}
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="{% url 'app:subordinates' %}">
+                        <i class="bi bi-people me-1"></i>My Action
+                    </a>
+                </li>
+                {% endif %}
+                
+                <!-- Create Employee (CEO/HR only) -->
+                <!-- {% if request.user.employee.role == 'CEO' or request.user.employee.role == 'HR' %}
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="{% url 'app:create' %}">
+                        <i class="bi bi-person-plus me-1"></i>Create Employee
+                    </a>
+                </li>
+                {% endif %} -->
+                
+                <!-- Performance Review (Non-CEO only) -->
+                {% if request.user.employee.role != 'CEO' or request.user.employee.role != 'HR' %}
+                    {% with review=request.user.employee.performance_review.first %}
+                    {% if review %}
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center" href="{% url 'app:detailperf' review.id %}">
+                            <i class="bi bi-clipboard-check me-1"></i>My Performance
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endwith %}
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link d-flex text-danger" href="{% url 'app:logout' %}">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                </li>
+            </ul>
+            
+            <!-- User Info & Logout -->
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                        <div class="rounded-circle bg-light bg-opacity-20 p-1 me-2">
+                            <i class="bi bi-person-circle text-light"></i>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="text-light fw-semibold">
+                                {{ request.user.get_full_name|default:request.user.username }}
+                            </span>
+                            <small class="text-light text-opacity-75">
+                                {{ request.user.employee.get_role_display }}
+                            </small>
+                        </div>
+                    </a>
+                    {% if request.user.employee.role == 'CEO' or request.user.employee.role == 'HR' %}
+                    <ul class="dropdown-menu dropdown-menu-end glass-dropdown">
+                        
+                        <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{% url 'app:empupdate2' request.user.employee.id %}">
+                                    <i class="bi bi-gear me-2 text-primary"></i>Settings
+                                </a>
+                            
+                        </li>
+                        
+                    </ul>
+                    {% else %}
+                    <ul class="dropdown-menu dropdown-menu-end glass-dropdown">
+                        
+                        <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{% url 'app:empupdate1' %}">
+                                    <i class="bi bi-gear me-2 text-primary"></i>Settings
+                                </a>
+                            
+                        </li>
+                        
+                    </ul>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}

@@ -1,0 +1,27 @@
+[
+    {
+        "model":"app.Department",
+        "pk":1,
+        "fields": {
+            "department":"Management"
+        }
+    },{
+        "model":"app.Department",
+        "pk":1,
+        "fields": {
+            "department":"Human Resource"
+        }
+    },{
+        "model":"app.Department",
+        "pk":1,
+        "fields": {
+            "department":"Development"
+        }
+    },{
+        "model":"app.Department",
+        "pk":1,
+        "fields": {
+            "department":"Testing"
+        }
+    }
+]

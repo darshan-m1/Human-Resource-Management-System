@@ -1,0 +1,199 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Subordinates' Learning Plans</h1>
+        <p class="text-muted mb-0">Review and manage your team's learning plans</p>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-people text-primary fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">{{ subordinate_count }}</h4>
+                    <p class="text-muted mb-0">Total Subordinates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-hourglass text-warning fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">{{ pending_count.count }}</h4>
+                    <p class="text-muted mb-0">Pending Review</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-eye text-info fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">{{ review_count.count }}</h4>
+                    <p class="text-muted mb-0">In Review</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-check-circle text-success fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">{{ approved_count.count }}</h4>
+                    <p class="text-muted mb-0">Approved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if plans %}
+<div class="glass-card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="bg-light">
+                <tr>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person text-primary me-2"></i>Employee
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar text-primary me-2"></i>Quarter
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-flag text-primary me-2"></i>Status
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle text-primary me-2"></i>Completed
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clipboard text-primary me-2"></i>Planned
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock text-primary me-2"></i>Timeline
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-activity text-primary me-2"></i>Actions
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for plan in plans %}
+                <tr class="hover-lift">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-2">
+                                <i class="bi bi-person text-primary"></i>
+                            </div>
+                            <div>
+                                <strong>{{ plan.employee.user.get_full_name }}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <span class="badge bg-primary bg-opacity-10 text-primary p-2">
+                                Q {{ plan.quarter_date|date:"m" }}, {{ plan.quarter_date|date:"Y" }}
+                            </span>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <span class="badge bg-{% if plan.status == 'APPROVED' %}success{% elif plan.status == 'REVIEW' %}warning{% elif plan.status == 'REJECTED' %}danger{% else %}info{% endif %} bg-opacity-10 text-{% if plan.status == 'APPROVED' %}success{% elif plan.status == 'REVIEW' %}warning{% elif plan.status == 'REJECTED' %}danger{% else %}info{% endif %} p-2 rounded-pill">
+                            <i class="bi bi-{% if plan.status == 'APPROVED' %}check-circle{% elif plan.status == 'REVIEW' %}hourglass{% elif plan.status == 'REJECTED' %}x-circle{% else %}info-circle{% endif %} me-1"></i>
+                            {{ plan.status }}
+                        </span>
+                    </td>
+                    
+                    <td>
+                        <div class="text-truncate" style="max-width: 150px;">
+                            {{ plan.completed_learning|truncatechars:40|default:"-" }}
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <div class="text-truncate" style="max-width: 150px;">
+                            {{ plan.planned_learning|truncatechars:40|default:"-" }}
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <div class="d-flex flex-column">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-plus me-1"></i>{{ plan.submitted_at|date:"d M Y" }}
+                            </small>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-check me-1"></i>{{ plan.get_end_date|default:"-" }}
+                            </small>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'app:learnplandeep' plan.id %}" class="btn btn-outline-info">
+                                <i class="bi bi-eye me-1"></i>View
+                            </a>
+                            {% if plan.status in 'SUBMITTED,REVIEW' %}
+                            <a href="{% url 'app:reviewlp' plan.id %}" class="btn btn-outline-warning">
+                                <i class="bi bi-clipboard-check"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="glass-card p-4 text-center">
+    <div class="py-5">
+        <div class="rounded-circle bg-light p-4 d-inline-block mb-3">
+            <i class="bi bi-people text-muted fs-1"></i>
+        </div>
+        <h4 class="mb-3">No Learning Plans Yet</h4>
+        <p class="text-muted mb-4">Your team members haven't submitted any learning plans yet.</p>
+        <a href="{% url 'app:dashboard' %}" class="btn btn-outline-secondary hover-lift">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'app:dashboard' %}" class="btn btn-outline-secondary hover-lift">
+        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+{% endblock %}

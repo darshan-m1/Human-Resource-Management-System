@@ -1,0 +1,96 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-80">
+    <div class="col-md-8 col-lg-6 col-xl-4">
+        <div class="glass-card p-4">
+            <div class="text-center mb-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 d-inline-block mb-3">
+                    <i class="bi bi-person-circle text-primary fs-1"></i>
+                </div>
+                <h1 class="gradient-text mb-2">Welcome Back</h1>
+                <p class="text-muted">Sign in to your HRMS account</p>
+            </div>
+            
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="glass-card p-3 mb-4 hover-lift">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                            <i class="bi bi-person text-primary"></i>
+                        </div>
+                        <div>
+                            <label for="username" class="form-label fw-semibold mb-1">Username</label>
+                            <p class="text-muted small mb-0">Enter your username or email</p>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-at text-muted"></i>
+                        </span>
+                        <input type="text" name="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                </div>
+                
+                <!-- Password Field -->
+                <div class="glass-card p-3 mb-4 hover-lift">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                            <i class="bi bi-shield-lock text-warning"></i>
+                        </div>
+                        <div>
+                            <label for="password" class="form-label fw-semibold mb-1">Password</label>
+                            <p class="text-muted small mb-0">Enter your password</p>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-key text-muted"></i>
+                        </span>
+                        <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn gradient-btn w-100 py-3 hover-lift mb-4">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                </button>
+                
+                <!-- Help Text -->
+                <div class="glass-card p-3 text-center">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-info-circle text-info me-1"></i>
+                        Need help? Contact your system administrator
+                    </p>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Features -->
+        <div class="row mt-4 g-3">
+            <div class="col-md-4">
+                <div class="glass-card p-3 text-center hover-lift">
+                    <i class="bi bi-graph-up text-primary fs-4 mb-2"></i>
+                    <h6 class="mb-1">Performance</h6>
+                    <p class="text-muted small mb-0">Track and review performance</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-3 text-center hover-lift">
+                    <i class="bi bi-journal-text text-success fs-4 mb-2"></i>
+                    <h6 class="mb-1">Learning</h6>
+                    <p class="text-muted small mb-0">Manage learning plans</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-3 text-center hover-lift">
+                    <i class="bi bi-people text-info fs-4 mb-2"></i>
+                    <h6 class="mb-1">Team</h6>
+                    <p class="text-muted small mb-0">Collaborate with team</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

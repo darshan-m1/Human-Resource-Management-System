@@ -1,0 +1,205 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Learning Plan Details</h1>
+        <p class="text-muted mb-0">Complete overview of learning and development plan</p>
+    </div>
+    <div>
+        {% if plans.employee.reporting_to == request.user.employee %}
+            <a href="{% url 'app:reviewlp' plans.id %}" class="btn btn-outline-warning hover-lift me-2">
+                <i class="bi bi-clipboard-check me-2"></i>Review
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Employee Information -->
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-person-badge text-primary fs-2"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ plans.employee.user.get_full_name }}</h3>
+                    <div class="d-flex flex-wrap gap-3">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-briefcase me-1"></i>{{ plans.employee.get_role_display }}
+                        </span>
+                        <span class="badge bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-building me-1"></i>{{ plans.employee.department }}
+                        </span>
+                        {% if plans.employee.reporting_to %}
+                        <span class="badge bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-person-check me-1"></i>Reports to: {{ plans.employee.reporting_to.user.get_full_name }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="badge bg-{% if plans.status == 'APPROVED' %}success{% elif plans.status == 'REVIEW' %}warning{% elif plans.status == 'REJECTED' %}danger{% else %}info{% endif %} bg-opacity-10 text-{% if plans.status == 'APPROVED' %}success{% elif plans.status == 'REVIEW' %}warning{% elif plans.status == 'REJECTED' %}danger{% else %}info{% endif %} p-2 rounded-pill">
+                        <i class="bi bi-{% if plans.status == 'APPROVED' %}check-circle{% elif plans.status == 'REVIEW' %}hourglass{% elif plans.status == 'REJECTED' %}x-circle{% else %}info-circle{% endif %} me-1"></i>
+                        {{ plans.status }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Overview -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center hover-lift">
+                    <i class="bi bi-calendar text-primary fs-1 mb-3"></i>
+                    <h4 class="mb-1">Q {{ plans.quarter_date|date:"m" }}, {{ plans.quarter_date|date:"Y" }}</h4>
+                    <p class="text-muted mb-0">Quarter</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center hover-lift">
+                    <i class="bi bi-calendar-plus text-success fs-1 mb-3"></i>
+                    <h4 class="mb-1">{{ plans.submitted_at|date:"d M Y" }}</h4>
+                    <p class="text-muted mb-0">Submitted Date</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-card p-4 text-center hover-lift">
+                    <i class="bi bi-calendar-check text-info fs-1 mb-3"></i>
+                    <h4 class="mb-1">{{ plans.get_end_date|default:"-" }}</h4>
+                    <p class="text-muted mb-0">Due Date</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Learning -->
+        <div class="glass-card p-4 mb-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                    <span class="badge bg-success rounded-circle p-2">1</span>
+                </div>
+                <div>
+                    <h4 class="mb-0">Completed Learning</h4>
+                    <p class="text-muted mb-0">Accomplishments and completed activities</p>
+                </div>
+            </div>
+            
+            <div class="glass-card bg-light p-4">
+                <div class="fst-italic">
+                    {{ plans.completed_learning|linebreaks|default:"No completed learning recorded" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Planned Learning -->
+        <div class="glass-card p-4 mb-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                    <span class="badge bg-primary rounded-circle p-2">2</span>
+                </div>
+                <div>
+                    <h4 class="mb-0">Planned Learning</h4>
+                    <p class="text-muted mb-0">Future goals and development plans</p>
+                </div>
+            </div>
+            
+            <div class="glass-card bg-light p-4">
+                <div class="fst-italic">
+                    {{ plans.planned_learning|linebreaks|default:"No planned learning recorded" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Information -->
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-clipboard-check text-warning"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Review Information</h4>
+                    <p class="text-muted mb-0">Feedback and approval details</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Review Notes -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-chat-text text-primary me-2"></i>
+                            Review Notes
+                        </label>
+                        <div class="glass-card bg-light p-3">
+                            {{ plans.review_note|linebreaks|default:"No review notes provided" }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Meeting Schedule -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-calendar-event text-success me-2"></i>
+                            Meeting Schedule
+                        </label>
+                        <div class="glass-card bg-light p-3">
+                            {% if plans.schedule_meeting %}
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-calendar-check text-success me-2"></i>
+                                    <div>
+                                        <strong>{{ plans.schedule_meeting|date:"d M Y" }}</strong>
+                                        <div class="text-muted small">Scheduled meeting</div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">No meeting scheduled</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Approval Information -->
+            {% if plans.approved_by %}
+            <div class="glass-card p-4 mt-4 bg-light">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                        <i class="bi bi-check-circle text-success fs-2"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">Approved By</h5>
+                        <p class="mb-1">{{ plans.approved_by.user.get_full_name }}</p>
+                        <small class="text-muted">
+                            <i class="bi bi-calendar me-1"></i>
+                            {{ plans.approved_at|date:"d M Y" }}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="border-top pt-4 mt-4">
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-secondary hover-lift" onclick="history.back()">
+                    <i class="bi bi-arrow-left me-2"></i>Back
+                </button>
+                <div class="d-flex gap-2">
+                    {% if plans.employee.reporting_to == request.user.employee %}
+                        <a href="{% url 'app:reviewlp' plans.id %}" class="btn btn-outline-warning hover-lift">
+                            <i class="bi bi-clipboard-check me-2"></i>Review
+                        </a>
+                    {% endif %}
+                    {% if plans.employee.user == request.user and plans.status != 'APPROVED' %}
+                        <a href="{% url 'app:updatelp' plans.id %}" class="btn btn-outline-primary hover-lift">
+                            <i class="bi bi-pencil me-2"></i>Edit
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

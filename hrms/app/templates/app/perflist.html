@@ -1,0 +1,273 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Performance Reviews</h1>
+        <p class="text-muted mb-0">Review and grade your team's performance</p>
+    </div>
+    {% if request.user.employee.role != 'CEO' %}
+    <a href="{% url 'app:createpr' %}" class="btn gradient-btn hover-lift">
+        <i class="bi bi-plus-circle me-2"></i>Create Self-Review
+    </a>
+    {% endif %}
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-people text-primary fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">{{ subordinate_count }}</h4>
+                    <p class="text-muted mb-0">Subordinates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-check-circle text-success fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">{{ performances|length }}</h4>
+                    <p class="text-muted mb-0">Total Reviews</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 hover-lift">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-hourglass text-warning fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">
+                        {{ pending_grading }}
+                    </h4>
+                    <p class="text-muted mb-0">Pending Grading</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+{% if performances %}
+<div class="glass-card p-4">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="bg-light">
+                <tr>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person text-primary me-2"></i>Employee
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-briefcase text-primary me-2"></i>Role
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-list-task text-primary me-2"></i>Responsibilities
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-chat-text text-primary me-2"></i>Communication
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-award text-primary me-2"></i>Quality
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-check text-primary me-2"></i>Accountability
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-flag text-primary me-2"></i>Status
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-star text-primary me-2"></i>Overall
+                        </div>
+                    </th>
+                    <th class="border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-activity text-primary me-2"></i>Actions
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for performance in performances %}
+                <tr class="hover-lift">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-2">
+                                <i class="bi bi-person text-primary"></i>
+                            </div>
+                            <div>
+                                <strong>{{ performance.employee.user.get_full_name }}</strong>
+                                <div class="text-muted small">{{ performance.employee.department.name }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    
+                    <td>
+                        <span class="badge bg-primary bg-opacity-10 text-primary p-2">
+                            {{ performance.employee.get_role_display }}
+                        </span>
+                    </td>
+                    
+                    <!-- Responsibilities -->
+                    <td>
+                        <div class="mb-1 text-truncate" style="max-width: 150px;">
+                            <small>{{ performance.responsibilities|truncatechars:30|default:"-" }}</small>
+                        </div>
+                        <div>
+                            {% if performance.responsibility_rating %}
+                                <div class="rating-circle rating-{% if performance.responsibility_rating >= 4 %}excellent{% elif performance.responsibility_rating >= 2.5 %}average{% else %}poor{% endif %} d-inline-flex align-items-center justify-content-center">
+                                    {{ performance.responsibility_rating }}
+                                </div>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary p-1">Not rated</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <!-- Communication -->
+                    <td>
+                        <div class="mb-1 text-truncate" style="max-width: 150px;">
+                            <small>{{ performance.communication|truncatechars:30|default:"-" }}</small>
+                        </div>
+                        <div>
+                            {% if performance.communication_rating %}
+                                <div class="rating-circle rating-{% if performance.communication_rating >= 4 %}excellent{% elif performance.communication_rating >= 2.5 %}average{% else %}poor{% endif %} d-inline-flex align-items-center justify-content-center">
+                                    {{ performance.communication_rating }}
+                                </div>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary p-1">Not rated</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <!-- Quality -->
+                    <td>
+                        <div class="mb-1 text-truncate" style="max-width: 150px;">
+                            <small>{{ performance.quality|truncatechars:30|default:"-" }}</small>
+                        </div>
+                        <div>
+                            {% if performance.quality_rating %}
+                                <div class="rating-circle rating-{% if performance.quality_rating >= 4 %}excellent{% elif performance.quality_rating >= 2.5 %}average{% else %}poor{% endif %} d-inline-flex align-items-center justify-content-center">
+                                    {{ performance.quality_rating }}
+                                </div>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary p-1">Not rated</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <!-- Accountability -->
+                    <td>
+                        <div class="mb-1 text-truncate" style="max-width: 150px;">
+                            <small>{{ performance.accountability|truncatechars:30|default:"-" }}</small>
+                        </div>
+                        <div>
+                            {% if performance.accountability_rating %}
+                                <div class="rating-circle rating-{% if performance.accountability_rating >= 4 %}excellent{% elif performance.accountability_rating >= 2.5 %}average{% else %}poor{% endif %} d-inline-flex align-items-center justify-content-center">
+                                    {{ performance.accountability_rating }}
+                                </div>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary p-1">Not rated</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <!-- Status -->
+                    <td>
+                        {% if performance.responsibility_rating and performance.communication_rating and performance.quality_rating and performance.accountability_rating %}
+                            <span class="badge bg-success bg-opacity-10 text-success p-2 rounded-pill">
+                                <i class="bi bi-check-circle me-1"></i>Graded
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning p-2 rounded-pill">
+                                <i class="bi bi-hourglass me-1"></i>Pending
+                            </span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Overall Score -->
+                    <td>
+                        {% if performance.responsibility_rating and performance.communication_rating and performance.quality_rating and performance.accountability_rating %}
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-info bg-opacity-10 p-2 me-2">
+                                    <strong class="text-info">{{ performance.average_score|floatformat:1 }}</strong>
+                                </div>
+                                <small class="text-muted">/5</small>
+                            </div>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    
+                    <!-- Actions -->
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="{% url 'app:detailperf' performance.id %}" class="btn btn-outline-info">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            {% if not performance.responsibility_rating %}
+                                <a href="{% url 'app:gradeperf' performance.id %}" class="btn btn-outline-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'app:updategrade' performance.id %}" class="btn btn-outline-primary">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="glass-card p-4 text-center">
+    <div class="py-5">
+        <div class="rounded-circle bg-light p-4 d-inline-block mb-3">
+            <i class="bi bi-clipboard-data text-muted fs-1"></i>
+        </div>
+        <h4 class="mb-3">No Performance Reviews Found</h4>
+        {% if subordinate_count == 0 %}
+            <p class="text-muted mb-4">You don't have any subordinates reporting to you.</p>
+        {% else %}
+            <p class="text-muted mb-4">No performance reviews found for your subordinates.</p>
+        {% endif %}
+        <a href="{% url 'app:dashboard' %}" class="btn btn-outline-secondary hover-lift">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'app:dashboard' %}" class="btn btn-outline-secondary hover-lift">
+        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+{% endblock %}

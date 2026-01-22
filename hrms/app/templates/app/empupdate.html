@@ -1,0 +1,342 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Update Employee Profile</h1>
+        <p class="text-muted mb-0">Edit employee information and settings</p>
+    </div>
+    <a href="{% url 'app:dashboard' %}" class="btn btn-outline-secondary hover-lift">
+        <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Current Employee Info -->
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-person-badge text-primary fs-2"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ object.user.get_full_name }}</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-briefcase me-1"></i>{{ object.get_role_display }}
+                        </span>
+                        <span class="badge bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-building me-1"></i>{{ object.department.name }}
+                        </span>
+                        {% if object.reporting_to %}
+                        <span class="badge bg-info bg-opacity-10 text-info">
+                            <i class="bi bi-person-check me-1"></i>Reports to: {{ object.reporting_to.user.get_full_name }}
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="badge bg-warning bg-opacity-10 text-warning p-2 rounded-pill">
+                        <i class="bi bi-pencil-square me-1"></i>Editing Mode
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Form -->
+        <div class="glass-card p-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-pencil-square text-warning"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Edit Profile Information</h4>
+                    <p class="text-muted mb-0">Update employee details and settings</p>
+                </div>
+            </div>
+            
+            <!-- Display non-field errors -->
+            {% if form.non_field_errors %}
+            <div class="glass-card p-4 mb-4 bg-danger bg-opacity-10 border-danger">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-danger bg-opacity-20 p-2 me-3">
+                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 text-danger">Validation Error</h5>
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <form method="post" novalidate class="needs-validation">
+                {% csrf_token %}
+                
+                <!-- Department Field -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                        <i class="bi bi-building text-primary me-2"></i>Department
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-diagram-3 text-muted"></i>
+                        </span>
+                        {{ form.department }}
+                    </div>
+                    {% if form.department.errors %}
+                    <div class="text-danger small mt-2 d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle me-1"></i>
+                        {{ form.department.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted d-flex align-items-center mt-2">
+                        <i class="bi bi-lightbulb text-warning me-1"></i>
+                        Select the department where this employee works
+                    </small>
+                </div>
+                {% if request.user.employee.role == 'CEO' or request.user.employee.role == 'HR' %}
+                <!-- Role Field -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                        <i class="bi bi-briefcase text-success me-2"></i>Role
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-award text-muted"></i>
+                        </span>
+                        {{ form.role }}
+                    </div>
+                    {% if form.role.errors %}
+                    <div class="text-danger small mt-2 d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle me-1"></i>
+                        {{ form.role.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted d-flex align-items-center mt-2">
+                        <i class="bi bi-info-circle text-info me-1"></i>
+                        Only one CEO allowed in the system. Changing to CEO will be restricted if one exists.
+                    </small>
+                </div>
+                
+                <!-- Reporting To Field -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                        <i class="bi bi-person-check text-info me-2"></i>Reporting Manager
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-person-check text-muted"></i>
+                        </span>
+                        {{ form.reporting_to }}
+                    </div>
+                    {% if form.reporting_to.errors %}
+                    <div class="text-danger small mt-2 d-flex align-items-center">
+                        <i class="bi bi-exclamation-circle me-1"></i>
+                        {{ form.reporting_to.errors.0 }}
+                    </div>
+                    {% endif %}
+                    <small class="form-text text-muted d-flex align-items-center mt-2">
+                        <i class="bi bi-lightbulb text-warning me-1"></i>
+                        Select the manager this employee will report to
+                    </small>
+                </div>
+                {% endif %}
+                <!-- Current Information -->
+                <div class="glass-card p-4 bg-light">
+                    <h6 class="mb-3 d-flex align-items-center">
+                        <i class="bi bi-info-circle text-primary me-2"></i>Current Information
+                    </h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <small class="text-muted">Current Department</small>
+                            <p class="mb-0 fw-semibold">{{ object.department }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Current Role</small>
+                            <p class="mb-0 fw-semibold">{{ object.get_role_display }}</p>
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted">Current Reporting Manager</small>
+                            <p class="mb-0 fw-semibold">
+                                {% if object.reporting_to %}
+                                    {{ object.reporting_to.user.get_full_name }}
+                                {% else %}
+                                    <span class="text-muted">None</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="border-top pt-4 mt-4">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'app:dashboard' %}" class="btn btn-outline-danger px-4 hover-lift">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="reset" class="btn btn-outline-secondary px-4 hover-lift">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset Form
+                            </button>
+                            <button type="submit" class="btn gradient-btn px-4 hover-lift">
+                                <i class="bi bi-check-circle me-2"></i>Update Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Update Guidelines -->
+        <div class="glass-card p-4 mt-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-lightbulb text-warning"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Update Guidelines</h4>
+                    <p class="text-muted mb-0">Important information about profile updates</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="d-flex">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3 flex-shrink-0">
+                            <i class="bi bi-check-all text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-2">Accuracy Check</h6>
+                            <p class="text-muted small mb-0">Ensure all information is accurate and up-to-date before saving.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3 flex-shrink-0">
+                            <i class="bi bi-bell text-success"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-2">Notifications</h6>
+                            <p class="text-muted small mb-0">Employee will be notified of significant changes to their profile.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex">
+                        <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3 flex-shrink-0">
+                            <i class="bi bi-lock text-info"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-2">Security Log</h6>
+                            <p class="text-muted small mb-0">All changes are securely logged for audit and compliance purposes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3 flex-shrink-0">
+                            <i class="bi bi-arrow-repeat text-warning"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-2">Role Changes</h6>
+                            <p class="text-muted small mb-0">Role changes may affect system permissions and reporting structure.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex">
+                        <div class="rounded-circle bg-danger bg-opacity-10 p-2 me-3 flex-shrink-0">
+                            <i class="bi bi-shield-check text-danger"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-2">CEO Restriction</h6>
+                            <p class="text-muted small mb-0">Only one CEO can exist in the system at any time.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Form validation script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form validation feedback
+    const form = document.querySelector('form.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    }
+    
+    // Highlight CEO restriction
+    const roleSelect = document.querySelector('select[name="role"]');
+    if (roleSelect) {
+        roleSelect.addEventListener('change', function() {
+            if (this.value === 'CEO') {
+                // Show warning
+                const warning = document.createElement('div');
+                warning.className = 'alert alert-warning mt-2';
+                warning.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Only one CEO is allowed. This will fail if a CEO already exists.';
+                
+                // Remove existing warning
+                const existingWarning = this.parentNode.querySelector('.alert-warning');
+                if (existingWarning) {
+                    existingWarning.remove();
+                }
+                
+                this.parentNode.appendChild(warning);
+            } else {
+                // Remove warning
+                const existingWarning = this.parentNode.querySelector('.alert-warning');
+                if (existingWarning) {
+                    existingWarning.remove();
+                }
+            }
+        });
+    }
+});
+</script>
+
+<style>
+/* Consistent form styling */
+.form-control, .form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+    background-color: white;
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control,
+.input-group .form-select {
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Current info box */
+.bg-light {
+    background-color: rgba(248, 249, 250, 0.7) !important;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,301 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Edit Performance Self-Review</h1>
+        <p class="text-muted mb-0">Update your performance self-assessment</p>
+    </div>
+    <a href="{% url 'app:detailperf' object.id %}" class="btn btn-outline-secondary hover-lift">
+        <i class="bi bi-arrow-left me-2"></i>Back to View
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Status Alert -->
+        <div class="glass-card p-4 mb-4 {% if object.responsibility_rating %}bg-warning bg-opacity-10 border-warning{% else %}bg-info bg-opacity-10 border-info{% endif %}">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle {% if object.responsibility_rating %}bg-warning bg-opacity-20{% else %}bg-info bg-opacity-20{% endif %} p-2 me-3">
+                    <i class="bi bi-{% if object.responsibility_rating %}exclamation-triangle text-warning{% else %}info-circle text-info{% endif %}"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1 text-{% if object.responsibility_rating %}warning{% else %}info{% endif %}">
+                        {% if object.responsibility_rating %}
+                            Already Graded - Editing Restricted
+                        {% else %}
+                            Edit Before Grading
+                        {% endif %}
+                    </h5>
+                    <p class="text-muted mb-0">
+                        {% if object.responsibility_rating %}
+                            Your review has already been graded by your supervisor. Contact them if changes are needed.
+                        {% else %}
+                            You can edit your self-review before your supervisor grades it. Once graded, this form will be locked.
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="glass-card p-4">
+            <form method="POST" {% if object.responsibility_rating %}onsubmit="return confirm('This review has already been graded. Are you sure you want to update it?');"{% endif %}>
+                {% csrf_token %}
+                
+                <!-- Section 1: Responsibilities -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                            <span class="badge bg-primary rounded-circle p-2">1</span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">Responsibilities</h4>
+                            <p class="text-muted mb-0">Key responsibilities and accomplishments</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-journal-text text-primary me-2"></i>
+                            Describe Your Responsibilities & Accomplishments:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-journal text-muted mt-1"></i>
+                            </span>
+                            {{ form.responsibilities }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            What were your key responsibilities? What did you accomplish?
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person-circle text-primary me-2"></i>
+                            Self-Review & Reflection:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-chat-left-quote text-muted mt-1"></i>
+                            </span>
+                            {{ form.responsibility_self_review }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            How do you think you performed? What challenges did you face?
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Section 2: Communication -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                            <span class="badge bg-success rounded-circle p-2">2</span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">Communication</h4>
+                            <p class="text-muted mb-0">Team and stakeholder communication</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-megaphone text-success me-2"></i>
+                            Describe Your Communication Activities:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-chat-left-text text-muted mt-1"></i>
+                            </span>
+                            {{ form.communication }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            How did you communicate with team, stakeholders, etc.?
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person-check text-success me-2"></i>
+                            Self-Review & Reflection:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-chat-square-quote text-muted mt-1"></i>
+                            </span>
+                            {{ form.communication_self_review }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            How effective was your communication? Areas for improvement?
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Section 3: Quality of Work -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3">
+                            <span class="badge bg-info rounded-circle p-2">3</span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">Quality of Work</h4>
+                            <p class="text-muted mb-0">Work standards and quality assurance</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-award text-info me-2"></i>
+                            Describe Your Work Quality & Standards:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-check-square text-muted mt-1"></i>
+                            </span>
+                            {{ form.quality }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            What quality standards did you maintain? Examples of quality work?
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-check-all text-info me-2"></i>
+                            Self-Review & Reflection:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-check-circle text-muted mt-1"></i>
+                            </span>
+                            {{ form.quality_self_review }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            How would you rate your work quality? Improvements needed?
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Section 4: Accountability -->
+                <div class="glass-card p-4 mb-4 hover-lift">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                            <span class="badge bg-warning rounded-circle p-2">4</span>
+                        </div>
+                        <div>
+                            <h4 class="mb-0">Accountability</h4>
+                            <p class="text-muted mb-0">Ownership and responsibility</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-shield-check text-warning me-2"></i>
+                            Describe Your Accountability & Ownership:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-shield text-muted mt-1"></i>
+                            </span>
+                            {{ form.accountability }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            How did you take ownership? Meeting deadlines, problem-solving?
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person-workspace text-warning me-2"></i>
+                            Self-Review & Reflection:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light align-items-start">
+                                <i class="bi bi-person-badge text-muted mt-1"></i>
+                            </span>
+                            {{ form.accountability_self_review }}
+                        </div>
+                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                            How accountable were you? Areas to take more ownership?
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="border-top pt-4 mt-4">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'app:detailperf' object.id %}" class="btn btn-outline-danger px-4 hover-lift">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="reset" class="btn btn-outline-secondary px-4 hover-lift">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset Form
+                            </button>
+                            <button type="submit" class="btn gradient-btn px-4 hover-lift" {% if object.responsibility_rating %}disabled{% endif %}>
+                                <i class="bi bi-save me-2"></i>Update Self-Review
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Status Summary -->
+        <div class="glass-card p-4 mt-4">
+            <h5 class="mb-3 d-flex align-items-center">
+                <i class="bi bi-clipboard-check text-primary me-2"></i>
+                Current Review Status
+            </h5>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="fs-1 mb-2">
+                            {% if object.responsibility_rating %}
+                                <i class="bi bi-lock text-danger"></i>
+                            {% else %}
+                                <i class="bi bi-unlock text-success"></i>
+                            {% endif %}
+                        </div>
+                        <h6 class="mb-1">Edit Status</h6>
+                        <p class="text-muted small mb-0">
+                            {% if object.responsibility_rating %}
+                                Locked - Already Graded
+                            {% else %}
+                                Unlocked - Can Edit
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="text-center p-3 bg-light rounded">
+                        <div class="fs-1 mb-2">
+                            {% if object.responsibility_rating %}
+                                <i class="bi bi-check-circle text-success"></i>
+                            {% else %}
+                                <i class="bi bi-hourglass text-warning"></i>
+                            {% endif %}
+                        </div>
+                        <h6 class="mb-1">Review Status</h6>
+                        <p class="text-muted small mb-0">
+                            {% if object.responsibility_rating %}
+                                Graded by Supervisor
+                            {% else %}
+                                Pending Supervisor Review
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

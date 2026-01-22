@@ -1,0 +1,52 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<h1>All Learning Plans</h1>
+
+{% if is_ceo_or_hr %}
+    {% if plans %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Quarter</th>
+                <th>Status</th>
+                <th>Completed Learning</th>
+                <th>Planned Learning</th>
+                <th>Submitted Date</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for plan in plans %}
+            <tr>
+                <td>{{ plan.employee.user.get_full_name }}</td>
+                <td>{{ plan.employee.get_role_display }}</td>
+                <td>{{ plan.employee.department }}</td>
+                <td>Q{{ plan.quarter }} {{ plan.quarter_date|date:"Y" }}</td>
+                <td>
+                    <span class="status-badge status-{{ plan.status|lower }}">
+                        {{ plan.status }}
+                    </span>
+                </td>
+                <td>{{ plan.completed_learning|truncatechars:40 }}</td>
+                <td>{{ plan.planned_learning|truncatechars:40 }}</td>
+                <td>{{ plan.submitted_at|date:"d M Y" }}</td>
+                <td>{{ plan.get_end_date }}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info">No learning plans found in the system.</div>
+    {% endif %}
+{% else %}
+<div class="alert alert-danger">Access denied. Only CEO and HR can view all learning plans.</div>
+{% endif %}
+
+<div class="mt-30">
+    <a href="{% url 'app:learnplan' %}" class="btn btn-secondary">← Back to My Learning Plans</a>
+</div>
+{% endblock %}

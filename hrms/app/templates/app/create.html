@@ -1,0 +1,440 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Create Employee</h1>
+        <p class="text-muted mb-0">Add a new employee to the system</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <div class="glass-card p-4">
+            <!-- Display non-field errors at the top -->
+            {% if form.non_field_errors %}
+            <div class="glass-card p-4 mb-4 bg-danger bg-opacity-10 border-danger">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-danger bg-opacity-20 p-2 me-3">
+                        <i class="bi bi-exclamation-triangle text-danger"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1 text-danger">Validation Error</h5>
+                        {% for error in form.non_field_errors %}
+                            <p class="mb-0">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <form method="POST" novalidate class="needs-validation">
+                {% csrf_token %}
+                
+                <div class="row g-4">
+                    <!-- Section 1: Basic Information -->
+                    <div class="col-12">
+                        <div class="glass-card p-4 mb-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                                    <i class="bi bi-person-badge text-primary"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0">Basic Information</h4>
+                                    <p class="text-muted mb-0">Employee's personal details</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-4">
+                                <!-- Username -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-person-circle text-primary me-2"></i>Username
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-at text-muted"></i>
+                                            </span>
+                                            {{ form.username }}
+                                        </div>
+                                        {% if form.username.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.username.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Email -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-envelope text-primary me-2"></i>Email
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-envelope-at text-muted"></i>
+                                            </span>
+                                            {{ form.email }}
+                                        </div>
+                                        {% if form.email.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.email.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- First Name -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-person text-primary me-2"></i>First Name
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-person-vcard text-muted"></i>
+                                            </span>
+                                            {{ form.first_name }}
+                                        </div>
+                                        {% if form.first_name.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.first_name.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Last Name -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-person text-primary me-2"></i>Last Name
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-person-vcard text-muted"></i>
+                                            </span>
+                                            {{ form.last_name }}
+                                        </div>
+                                        {% if form.last_name.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.last_name.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 2: Security Information -->
+                    <div class="col-12">
+                        <div class="glass-card p-4 mb-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                                    <i class="bi bi-shield-lock text-warning"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0">Security Information</h4>
+                                    <p class="text-muted mb-0">Set up login credentials</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-4">
+                                <!-- Password -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-key text-warning me-2"></i>Password
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-lock text-muted"></i>
+                                            </span>
+                                            {{ form.password }}
+                                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
+                                        {% if form.password.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.password.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                                            <i class="bi bi-info-circle text-info me-1"></i>
+                                            Minimum 8 characters with letters and numbers
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Confirm Password -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-key-fill text-warning me-2"></i>Confirm Password
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-lock-fill text-muted"></i>
+                                            </span>
+                                            {{ form.confirm_password }}
+                                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </div>
+                                        {% if form.confirm_password.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.confirm_password.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                                            <i class="bi bi-check-circle text-success me-1"></i>
+                                            Passwords must match
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section 3: Employment Details -->
+                    <div class="col-12">
+                        <div class="glass-card p-4 mb-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                                    <i class="bi bi-briefcase text-success"></i>
+                                </div>
+                                <div>
+                                    <h4 class="mb-0">Employment Details</h4>
+                                    <p class="text-muted mb-0">Job role and department information</p>
+                                </div>
+                            </div>
+                            
+                            <div class="row g-4">
+                                <!-- Department -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-building text-success me-2"></i>Department
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-diagram-3 text-muted"></i>
+                                            </span>
+                                            {{ form.department }}
+                                        </div>
+                                        {% if form.department.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.department.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Role -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-person-badge text-success me-2"></i>Role
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-award text-muted"></i>
+                                            </span>
+                                            {{ form.role }}
+                                        </div>
+                                        {% if form.role.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.role.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                                            <i class="bi bi-info-circle text-info me-1"></i>
+                                            Only one CEO allowed in the system
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Reporting To -->
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label class="form-label fw-semibold d-flex align-items-center mb-2">
+                                            <i class="bi bi-diagram-2 text-success me-2"></i>Reporting Manager
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light">
+                                                <i class="bi bi-person-check text-muted"></i>
+                                            </span>
+                                            {{ form.reporting_to }}
+                                        </div>
+                                        {% if form.reporting_to.errors %}
+                                        <div class="text-danger small mt-2 d-flex align-items-center">
+                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                            {{ form.reporting_to.errors.0 }}
+                                        </div>
+                                        {% endif %}
+                                        <small class="form-text text-muted d-flex align-items-center mt-2">
+                                            <i class="bi bi-lightbulb text-warning me-1"></i>
+                                            Select the manager this employee will report to
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="border-top pt-4 mt-4">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'app:dashboard' %}" class="btn btn-outline-danger px-4 hover-lift">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <div class="d-flex gap-2">
+                            <button type="reset" class="btn btn-outline-secondary px-4 hover-lift">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Reset Form
+                            </button>
+                            <button type="submit" class="btn gradient-btn px-4 hover-lift">
+                                <i class="bi bi-person-plus me-2"></i>Create Employee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Password Toggle Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    const togglePassword = document.getElementById('togglePassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const passwordField = document.querySelector('input[name="password"]');
+    const confirmPasswordField = document.querySelector('input[name="confirm_password"]');
+    
+    if (togglePassword && passwordField) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('bi-eye');
+            this.querySelector('i').classList.toggle('bi-eye-slash');
+        });
+    }
+    
+    if (toggleConfirmPassword && confirmPasswordField) {
+        toggleConfirmPassword.addEventListener('click', function() {
+            const type = confirmPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordField.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('bi-eye');
+            this.querySelector('i').classList.toggle('bi-eye-slash');
+        });
+    }
+    
+    // Form validation feedback
+    const form = document.querySelector('form.needs-validation');
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    }
+    
+    // Auto-focus first field
+    const firstInput = form.querySelector('input:not([type="hidden"])');
+    if (firstInput) {
+        firstInput.focus();
+    }
+});
+</script>
+
+<!-- Add custom CSS for form styling -->
+<style>
+.form-control, .form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
+    background-color: white;
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+    background-color: #f8f9fa;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+}
+
+.input-group .btn-outline-secondary {
+    border-radius: 0 8px 8px 0;
+    border-left: none;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    color: #495057;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.glass-card .form-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Password strength indicator */
+.password-strength {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.password-strength.weak {
+    background-color: #ef4444;
+    width: 25%;
+}
+
+.password-strength.fair {
+    background-color: #f59e0b;
+    width: 50%;
+}
+
+.password-strength.good {
+    background-color: #3b82f6;
+    width: 75%;
+}
+
+.password-strength.strong {
+    background-color: #10b981;
+    width: 100%;
+}
+</style>
+{% endblock %}

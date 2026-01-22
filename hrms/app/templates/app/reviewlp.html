@@ -1,0 +1,241 @@
+{% extends 'app/base.html' %}
+{% block content %}
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="mb-1 gradient-text">Review Learning Plan</h1>
+        <p class="text-muted mb-0">Approve or provide feedback on learning plans</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-10 mx-auto">
+        <!-- Employee Information -->
+        <div class="glass-card p-4 mb-4">
+            <div class="d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-person-badge text-primary fs-2"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h3 class="mb-1">{{ object.employee.user.get_full_name }}</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-briefcase me-1"></i>{{ object.employee.get_role_display }}
+                        </span>
+                        <span class="badge bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-building me-1"></i>{{ object.employee.department.name }}
+                        </span>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="badge bg-warning bg-opacity-10 text-warning p-2 rounded-pill">
+                        <i class="bi bi-hourglass me-1"></i>
+                        {{ object.status }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Plan Details -->
+        <div class="glass-card p-4 mb-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-info-circle text-info"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Plan Details</h4>
+                    <p class="text-muted mb-0">Quarterly learning plan information</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-calendar text-info me-2"></i>
+                            Quarter
+                        </label>
+                        <div class="glass-card p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                                    Q{{ object.quarter }}
+                                </div>
+                                <div>
+                                    <h5 class="mb-0">{{ object.quarter_date|date:"Y" }}</h5>
+                                    <small class="text-muted">Quarter Year</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-clock text-info me-2"></i>
+                            Timeline
+                        </label>
+                        <div class="glass-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <small class="text-muted">Submitted</small>
+                                    <h6 class="mb-0">{{ object.submitted_at|date:"d M Y" }}</h6>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">Due Date</small>
+                                    <h6 class="mb-0">{{ object.get_end_date }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Learning -->
+        <div class="glass-card p-4 mb-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-check-circle text-success"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Completed Learning</h4>
+                    <p class="text-muted mb-0">What has been accomplished</p>
+                </div>
+            </div>
+            
+            <div class="glass-card bg-light p-4">
+                {{ object.completed_learning|linebreaks }}
+            </div>
+        </div>
+
+        <!-- Planned Learning -->
+        <div class="glass-card p-4 mb-4 hover-lift">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-clipboard text-primary"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Planned Learning</h4>
+                    <p class="text-muted mb-0">Future learning goals</p>
+                </div>
+            </div>
+            
+            <div class="glass-card bg-light p-4">
+                {{ object.planned_learning|linebreaks }}
+            </div>
+        </div>
+
+        <!-- Review Form -->
+        <div class="glass-card p-4">
+            <div class="d-flex align-items-center mb-4">
+                <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+                    <i class="bi bi-clipboard-check text-warning"></i>
+                </div>
+                <div>
+                    <h4 class="mb-0">Review & Approval</h4>
+                    <p class="text-muted mb-0">Provide feedback and make decision</p>
+                </div>
+            </div>
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Status Selection -->
+                <div class="glass-card p-4 mb-4">
+                    <label class="form-label fw-semibold mb-3">
+                        <i class="bi bi-flag text-primary me-2"></i>
+                        Decision
+                    </label>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="form-check card-choice" onclick="document.getElementById('id_status_1').checked=true">
+                                <input class="form-check-input" type="radio" name="status" value="APPROVED" id="id_status_1" {% if object.status == 'APPROVED' %}checked{% endif %}>
+                                <label class="form-check-label w-100" for="id_status_1">
+                                    <div class="glass-card p-3 text-center hover-lift">
+                                        <i class="bi bi-check-circle text-success fs-3 mb-2"></i>
+                                        <h6 class="mb-1">Approve</h6>
+                                        <p class="text-muted small mb-0">Plan meets requirements</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check card-choice" onclick="document.getElementById('id_status_2').checked=true">
+                                <input class="form-check-input" type="radio" name="status" value="REVIEW" id="id_status_2" {% if object.status == 'REVIEW' %}checked{% endif %}>
+                                <label class="form-check-label w-100" for="id_status_2">
+                                    <div class="glass-card p-3 text-center hover-lift">
+                                        <i class="bi bi-hourglass text-warning fs-3 mb-2"></i>
+                                        <h6 class="mb-1">Needs Review</h6>
+                                        <p class="text-muted small mb-0">Requires changes</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check card-choice" onclick="document.getElementById('id_status_3').checked=true">
+                                <input class="form-check-input" type="radio" name="status" value="REJECTED" id="id_status_3" {% if object.status == 'REJECTED' %}checked{% endif %}>
+                                <label class="form-check-label w-100" for="id_status_3">
+                                    <div class="glass-card p-3 text-center hover-lift">
+                                        <i class="bi bi-x-circle text-danger fs-3 mb-2"></i>
+                                        <h6 class="mb-1">Reject</h6>
+                                        <p class="text-muted small mb-0">Does not meet standards</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Review Notes -->
+                <div class="glass-card p-4 mb-4">
+                    <label class="form-label fw-semibold mb-3">
+                        <i class="bi bi-chat-text text-primary me-2"></i>
+                        Feedback & Notes
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light align-items-start">
+                            <i class="bi bi-pencil text-muted mt-1"></i>
+                        </span>
+                        {{ form.review_note }}
+                    </div>
+                    <small class="form-text text-muted d-flex align-items-center mt-2">
+                        <i class="bi bi-lightbulb text-warning me-1"></i>
+                        Provide constructive feedback to help employee improve
+                    </small>
+                </div>
+                
+                <!-- Meeting Schedule -->
+                <div class="glass-card p-4 mb-4">
+                    <label class="form-label fw-semibold mb-3">
+                        <i class="bi bi-calendar-event text-primary me-2"></i>
+                        Schedule Follow-up Meeting
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="bi bi-calendar text-muted"></i>
+                        </span>
+                        {{ form.schedule_meeting }}
+                    </div>
+                    <small class="form-text text-muted d-flex align-items-center mt-2">
+                        <i class="bi bi-info-circle text-info me-1"></i>
+                        Optional: Schedule a meeting to discuss the plan
+                    </small>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="border-top pt-4 mt-4">
+                    <div class="d-flex justify-content-between">
+                        <a onclick="history.back()" class="btn btn-outline-danger px-4 hover-lift">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        
+                        <button type="submit" class="btn gradient-btn px-4 hover-lift">
+                            <i class="bi bi-send-check me-2"></i>Submit Review
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
