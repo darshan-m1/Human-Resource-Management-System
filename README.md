@@ -57,7 +57,7 @@ Virtual Environment
 ## Installation
 1. Clone the repository
    ```bash
-   git clone https://github.com/darshan-m1/Human-Resource-Management-System ```
+   git clone https://github.com/darshan-m1/Human-Resource-Management-System 
 
 2. Create virtual environment
     ```bash
@@ -65,21 +65,26 @@ Virtual Environment
     # On Windows
     venv\Scripts\activate
     # On Mac/Linux
-    source venv/bin/activate```
+    source venv/bin/activate
 
 3. Install dependencies
    ```bash
-   pip install django django-filter```
+   pip install django django-filter
 
 4. Configure environment variables
 
 Create .env file:
-    ```
+
+    
     SECRET_KEY=your-secret-key-here
+    
     DEBUG=True
+    
     DATABASE_URL=sqlite:///db.sqlite3
+    
     EMAIL_HOST=smtp.gmail.com
-    EMAIL_PORT=587```
+    
+    EMAIL_PORT=587
 
 6. Run migrations
    ```
