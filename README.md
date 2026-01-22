@@ -2,7 +2,9 @@
 A comprehensive Human Resource Management System built with Django, designed to streamline employee management, performance tracking, and HR operations.
 
 https://img.shields.io/badge/Django-4.2-green
+
 https://img.shields.io/badge/Bootstrap-5.0-blue
+
 https://img.shields.io/badge/License-MIT-yellow
 
 # ✨ Features
@@ -43,7 +45,7 @@ Approval Workflows - Manager approvals for requests
 Status Updates - Automatic notifications
 
 ## 🚀 Quick Start
-Prerequisites
+### Prerequisites
 Python 3.8+
 
 Django 4.2+
@@ -70,25 +72,26 @@ Virtual Environment
    pip install django django-filter```
 
 4. Configure environment variables
+
 Create .env file:
-   ```bash
+    ```
     SECRET_KEY=your-secret-key-here
     DEBUG=True
     DATABASE_URL=sqlite:///db.sqlite3
     EMAIL_HOST=smtp.gmail.com
     EMAIL_PORT=587```
 
-5. Run migrations
-   ```bash
+6. Run migrations
+   ```
    python manage.py makemigrations
-   python manage.py migrate```
+   python manage.py migrate
 
-6. Create superuser
+7. Create superuser
    ```bash
-   python manage.py createsuperuser```
+   python manage.py createsuperuser
 
-7. Run Server
+8. Run Server
    ```bash
-   python manage.py runserver```
+   python manage.py runserver
 
 Visit: http://127.0.0.1:8000/
